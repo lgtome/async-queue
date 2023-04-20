@@ -1,0 +1,45 @@
+{
+  "name": "async-queue",
+  "version": "0.1.0",
+  "description": "Simple library to use JS generators with runner function.",
+  "keywords": [
+    "generators",
+    "generator",
+    "runner",
+    "run",
+    "Generator",
+    "Generators",
+    "queue",
+    "run queue"
+  ],
+  "scripts": {
+    "coverage": "c8",
+    "declarations": "tsc --project tsconfig.json",
+    "serve": "tsc && node ./lib/index.js"
+  },
+  "author": "lgtome <seryikotenok232@gmail.com>",
+  "license": "MIT",
+  "repository": "lgtome/async-queue",
+  "engines": {
+    "node": "^14.0.0 || ^16.0.0 || >=18.0.0"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json"
+  },
+  "devDependencies": {
+    "c8": "^7.13.0",
+    "typescript": "^5.0.4"
+  },
+  "c8": {
+    "exclude": [
+      "**/*.test.*"
+    ],
+    "lines": 100,
+    "reporter": "lcov",
+    "check-coverage": true
+  }
+}
