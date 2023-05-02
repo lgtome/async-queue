@@ -58,6 +58,45 @@ await queue.resume()
 queue.getResultedData()
 ```
 
+If you want to pass function with multiple arguments, you can:
+
+```ts
+const queue = new CreateAsyncQueue(
+  (first: string, second: number) => first + second,
+  [
+    ['1', 1],
+    ['2', 2],
+  ],
+)
+await queue.run()
+```
+
+If you want to control, log or transform every queue item after awaiting, you can pass function to run:
+
+```ts
+const queue = new CreateAsyncQueue((value: string) => value, ['1', '2', '3'])
+await queue.run((item) => {
+  ...do with item everything
+})
+```
+
+it will be invoked on every iteration.
+
+Also, if you invoke run function second time and don't want to invoke previous function passed, you can suppress this:
+
+```ts
+const queue = new CreateAsyncQueue((value: string) => value, ['1', '2', '3'])
+await queue.run((item) => {
+  ...
+})
+
+...
+
+await queue.run(null, false)
+```
+
+just pass the second argument as `false` to suppress invocation
+
 ### API
 
 #### **Stop**

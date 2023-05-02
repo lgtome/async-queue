@@ -2,7 +2,12 @@ import { describe, expect, it, vi } from 'vitest'
 import { CreateAsyncQueue } from '../index'
 
 const helpFn = (item: string) => item
+const multiplePropsHelpFn = (first: string, second: number) => first + second
 const entryData = ['1', '2', '3']
+const multipleEntryData: Array<[string, number]> = [
+  ['1', 1],
+  ['2', 2],
+]
 const waiterEntryData = [200, 400]
 
 function waiter(time = 1000) {
@@ -188,7 +193,17 @@ describe('Async queue', () => {
 
     expect(queue.getQueueData()).toEqual([])
 
-    const result = await queue.resetAll(waiterEntryData)
+    const result = queue.resetAll(waiterEntryData)
+
+    expect(result).instanceOf(CreateAsyncQueue)
+  })
+  it('Accept more than one props', async () => {
+    const queue = new CreateAsyncQueue(multiplePropsHelpFn, multipleEntryData)
+    await queue.run()
+
+    expect(queue.getQueueData()).toEqual([])
+
+    const result = queue.resetAll(multipleEntryData)
 
     expect(result).instanceOf(CreateAsyncQueue)
   })
