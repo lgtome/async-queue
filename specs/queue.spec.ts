@@ -3,6 +3,7 @@ import { CreateAsyncQueue } from '../index'
 
 const helpFn = (item: string) => item
 const entryData = ['1', '2', '3']
+const waiterEntryData = [200, 400]
 
 function waiter(time = 1000) {
   return new Promise(res => {
@@ -40,7 +41,7 @@ describe('Async queue', () => {
     const queue = new CreateAsyncQueue(helpFn, entryData)
     const res = await queue.runWithResult(predicator)
     const processed = queue.getProcessedData()
-
+    queue //
     expect(res).toEqual(entryData.map(predicator))
     expect(processed).toEqual(entryData)
   })
@@ -124,5 +125,71 @@ describe('Async queue', () => {
     expect(queue.getProcessedData()).toEqual(
       entryData.concat(reversedEntryData),
     )
+  })
+  it('Stop and Resume works correct', async () => {
+    const predicator = item => +item * 2
+    const queue = new CreateAsyncQueue(waiter, waiterEntryData)
+    queue.run(predicator)
+
+    await waiter(150)
+
+    queue.stop()
+
+    expect(queue.getQueueData()).toEqual(waiterEntryData)
+
+    queue.resume()
+
+    await waiter(250)
+
+    expect(queue.getQueueData()).toEqual([400])
+    queue.stop()
+    queue.push(waiterEntryData)
+
+    await queue.resume()
+
+    expect(queue.getQueueData()).toEqual([])
+  })
+
+  it('Chaining works correct, also with binding functions', async () => {
+    const predicator = item => +item * 2
+    const queue = new CreateAsyncQueue(waiter, waiterEntryData)
+    await queue
+      .run(predicator)
+      .then(() => waiter(150))
+      .then(queue.stop)
+      .then(() => waiter(250))
+      .then(queue.resume)
+
+    expect(queue.getQueueData()).toEqual([])
+  })
+  it('If no queue data, it returns correct instance, with { run } function', async () => {
+    const queue = new CreateAsyncQueue(waiter, waiterEntryData)
+    await queue.run()
+
+    expect(queue.getQueueData()).toEqual([])
+
+    const result = await queue.run()
+
+    expect(result).instanceOf(CreateAsyncQueue)
+  })
+  it('If no queue data, it returns correct instance, with { runWithResult } function', async () => {
+    const queue = new CreateAsyncQueue(waiter, waiterEntryData)
+    await queue.run()
+
+    expect(queue.getQueueData()).toEqual([])
+
+    const result = await queue.runWithResult()
+
+    expect(result).instanceOf(Array)
+  })
+  it('Reset all returns instance', async () => {
+    const queue = new CreateAsyncQueue(waiter, waiterEntryData)
+    await queue.run()
+
+    expect(queue.getQueueData()).toEqual([])
+
+    const result = await queue.resetAll(waiterEntryData)
+
+    expect(result).instanceOf(CreateAsyncQueue)
   })
 })

@@ -1,5 +1,5 @@
 {
-  "name": "async-queue",
+  "name": "async-queued",
   "version": "0.1.0",
   "description": "Simple library to use JS generators with runner function.",
   "keywords": [

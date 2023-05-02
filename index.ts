@@ -55,6 +55,7 @@ export class CreateAsyncQueue<
   private runCallback?: (args: ReturnType<Iteration>) => any
   private isRunning: boolean = false
   private emitter: LocalEmitter
+
   constructor(useIteration: Iteration, iterationProps: Props) {
     this.emitter = new LocalEmitter()
     this.initialization(useIteration, iterationProps)
@@ -188,6 +189,8 @@ export class CreateAsyncQueue<
   resetAll(iterationProps: Props) {
     this.setToDefault()
     this.fillQueue(iterationProps)
+
+    return this
   }
 
   stop() {
@@ -195,7 +198,7 @@ export class CreateAsyncQueue<
     return this
   }
 
-  async resume() {
+  resume() {
     this.options.isAborted = false
     if (this.queueSet.size) {
       return this.run()
@@ -208,36 +211,3 @@ export class CreateAsyncQueue<
     return this
   }
 }
-
-/**
- * @tests
- */
-
-// function waiter(time = 1000) {
-//   return new Promise(res => {
-//     setTimeout(() => {
-//       res(Math.random())
-//     }, time)
-//   })
-// }
-
-// const s = new CreateAsyncQueue(waiter, [2000, 2000])
-// s.run(item => console.log(item)).then(d => console.log('THEN', d))
-// console.log('hm...start', s)
-// waiter(1500)
-//   .then(() => {
-//     console.log('hm...stop')
-//     s.stop()
-//   })
-//   .then(() => {
-//     waiter(1000)
-//     console.log('awaited')
-//   })
-//   .then(() => {
-//     s.push([4000])
-//     console.log('pushed...')
-//   })
-//   .then(s.resume)
-//   .then(s => console.log(s, 'seems it is end'))
-// //.then(s.resume)
-// console.log('!!@!@!@')

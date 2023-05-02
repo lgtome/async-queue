@@ -1,5 +1,7 @@
 # Async queue for processing data
 
+~96% code coverage ✨
+
 ## Installation and Usage
 
 ### ES6 via npm
@@ -52,6 +54,87 @@ queue.stop()
 await queue.resume()
 
 queue.getResultedData()
+```
+
+### API
+
+#### **Stop**
+
+Stop function that just stopping all future Promises, but not current.
+
+```ts
+/**
+ * @returns CreateAsyncQueue instance
+ */
+queue.stop()
+```
+
+#### **Resume**
+
+Resume function that just resume current queue.
+
+```ts
+/**
+ * @returns CreateAsyncQueue instance
+ */
+queue.resume()
+```
+
+#### **Push**
+
+Push function that just push values to current queue.
+
+```ts
+/**
+ * @entry Array of { values }
+ * @returns CreateAsyncQueue instance
+ */
+queue.push()
+```
+
+#### **resetAll**
+
+resetAll function that just reset queue and set queue data.
+
+```ts
+/**
+ * @entry Array of { values }
+ * @returns CreateAsyncQueue instance
+ */
+queue.resetAll()
+```
+
+#### **getResultedData**
+
+getResultedData function that just return resulted after queue data.
+
+```ts
+/**
+ * @returns Array of { values }
+ */
+queue.getResultedData()
+```
+
+#### **getQueueData**
+
+getQueueData function that just return data to current queue, that need to be processed.
+
+```ts
+/**
+ * @returns Array of { values }
+ */
+queue.getQueueData()
+```
+
+#### **getProcessedData**
+
+getProcessedData function that just return data that already processed, but not resulted.
+
+```ts
+/**
+ * @returns Array of { values }
+ */
+queue.getProcessedData()
 ```
 
 ### Couple words about Typescript
