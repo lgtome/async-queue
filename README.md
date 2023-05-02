@@ -142,7 +142,7 @@ resetAll function that just reset queue and set queue data.
  * @entry Array of { values }
  * @returns CreateAsyncQueue instance
  */
-queue.resetAll()
+queue.resetAll([1, 2, 3])
 ```
 
 #### **getResultedData**
