@@ -11,6 +11,36 @@ export type ParametersWithArg<Fn = (...args: any[]) => any> = Fn extends (
   : never
 type MapKeys = 'queue' | 'processed'
 type Options = { isAborted: boolean }
+type EmitEvents = 'running' | 'stopping'
+class LocalEmitter {
+  subscribers = new Map<EmitEvents, Set<Function>>()
+
+  emit(emittedEvent: EmitEvents) {
+    this.subscribers.forEach((set, event) => {
+      if (emittedEvent === event) {
+        set.forEach(fn => {
+          fn()
+        })
+      }
+    })
+  }
+  subscribe(event: EmitEvents, fn: Function) {
+    const set = this.subscribers.get(event)
+    if (!set) {
+      this.subscribers.set(event, new Set([fn]))
+      return
+    }
+    set.add(fn)
+    this.subscribers.set(event, set)
+  }
+  unsubscribe(event: EmitEvents, fn: Function) {
+    const set = this.subscribers.get(event)
+    if (!set) {
+      return
+    }
+    set.delete(fn)
+  }
+}
 
 export class CreateAsyncQueue<
   Iteration extends FunctionExtended = FunctionExtended,
@@ -23,9 +53,10 @@ export class CreateAsyncQueue<
   private useIteration!: Iteration
   private resulted: Array<ReturnType<(args: ReturnType<Iteration>) => any>> = []
   private runCallback?: (args: ReturnType<Iteration>) => any
-
-
+  private isRunning: boolean = false
+  private emitter: LocalEmitter
   constructor(useIteration: Iteration, iterationProps: Props) {
+    this.emitter = new LocalEmitter()
     this.initialization(useIteration, iterationProps)
     this.bindFunctions()
   }
@@ -42,6 +73,7 @@ export class CreateAsyncQueue<
   private getQueue() {
     return this.queue.get('queue') as Set<Props>
   }
+
   private getProcessed() {
     return this.queue.get('processed') as Set<Props>
   }
@@ -58,7 +90,9 @@ export class CreateAsyncQueue<
 
   private async *gen() {
     for (let prop of [...this.queueSet]) {
+      this.emitRunning()
       if (this.options.isAborted) {
+        this.emitStopping()
         return
       }
       const preparedData = Array.isArray(prop) ? [...prop] : [prop]
@@ -66,6 +100,7 @@ export class CreateAsyncQueue<
 
       this.queueSet.delete(prop)
       this.processedSet.add(prop)
+      this.emitStopping()
     }
   }
   async run<Fn extends (args: ReturnType<Iteration>) => any>(
@@ -74,6 +109,9 @@ export class CreateAsyncQueue<
   ) {
     if (callback) {
       this.runCallback = callback
+    }
+    if (this.isRunning) {
+      await this.awaitRunning()
     }
     const memoizedCb = callback || this.runCallback
     for await (let item of this.gen()) {
@@ -85,7 +123,19 @@ export class CreateAsyncQueue<
 
     return this.resulted
   }
-
+  private awaitRunning() {
+    return new Promise(res => {
+      this.emitter.subscribe('stopping', res)
+    })
+  }
+  private emitRunning() {
+    this.isRunning = true
+    this.emitter.emit('running')
+  }
+  private emitStopping() {
+    this.isRunning = false
+    this.emitter.emit('stopping')
+  }
   private setToDefault() {
     this.options = {
       isAborted: false,
