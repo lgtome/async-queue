@@ -141,10 +141,10 @@ export class CreateAsyncQueue<
     if (!this.queueSet.size) {
       return resultOption
     }
-    const memoizedCb = callback || this.runCallback
+    const establishedCallback = this.runCallback
     for await (let item of this.gen()) {
-      if (memoizedCb && !isCallbackShouldBeSkipped) {
-        const res = await memoizedCb(item)
+      if (establishedCallback && !isCallbackShouldBeSkipped) {
+        const res = await establishedCallback(item)
         this.resulted.push(res)
       }
     }
