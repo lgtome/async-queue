@@ -63,7 +63,7 @@ const iterationFn = (value: string) => value
 /**
  * value: string -> we have only 1 way how to pass entry value array it is a Array<string>
  */
-const queue = new CreateAsyncQueue((value: string) => value, ['1', '2', '3'])
+const queue = new CreateAsyncQueue(iterationFn, ['1', '2', '3'])
 await queue.run()
 ```
 
@@ -72,7 +72,7 @@ const iterationFn = (value: boolean) => value
 /**
  * value: boolean -> we have only 1 way how to pass entry value array it is a Array<boolean>
  */
-const queue = new CreateAsyncQueue((value: string) => value, [true, false])
+const queue = new CreateAsyncQueue(iterationFn, [true, false])
 await queue.run()
 ```
 
