@@ -2,6 +2,8 @@
 
 ~96% code coverage ✨
 
+Zero dependencies ✨
+
 ## Installation and Usage
 
 ### ES6 via npm
