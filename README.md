@@ -200,6 +200,18 @@ const queue = new CreateAsyncQueue(iterationFn, [true, false])
 await queue.run()
 ```
 
+```ts
+const iterationFn = (value: boolean, secondValue: number) => value
+/**
+ * value: [boolean, number] -> we have only 1 way how to pass entry value array it is a Array<[boolean,number]>
+ */
+const queue = new CreateAsyncQueue(iterationFn, [
+  [true, 1],
+  [false, 2],
+])
+await queue.run()
+```
+
 ## Goals
 
 - Smaller overall bundles sizes
