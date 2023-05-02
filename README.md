@@ -217,7 +217,8 @@ it also works with partial arguments
 ```ts
 const iterationFn = (value: boolean, secondValue?: number) => value
 /**
- * value: [boolean, number] -> we have only 1 way how to pass entry value array it is a Array<[boolean,number]>
+ * value: [boolean, number] -> we have only 1 way how to pass entry value array
+ * it is a Array<[boolean,number]> or Array<[boolean]>
  */
 const queue = new CreateAsyncQueue(iterationFn, [[true, 1], [false]])
 await queue.run()
