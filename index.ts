@@ -46,9 +46,9 @@ export class CreateAsyncQueue<
   Iteration extends FunctionExtended = FunctionExtended,
   Props extends ParametersWithArg<Iteration> = ParametersWithArg<Iteration>,
 > {
-  private queue!: Map<MapKeys, Set<Props>>
+  private queue!: Map<MapKeys, Set<Props> | Array<Props>>
   private queueSet!: Set<Props>
-  private processedSet!: Set<Props>
+  private processedSet!: Array<Props>
   private options!: Options
   private useIteration!: Iteration
   private resulted: Array<ReturnType<(args: ReturnType<Iteration>) => any>> = []
@@ -75,17 +75,21 @@ export class CreateAsyncQueue<
   }
 
   private getProcessed() {
-    return this.queue.get('processed') as Set<Props>
+    return this.queue.get('processed') as Array<Props>
   }
   private bindFunctions() {
     this.resume = this.resume.bind(this)
     this.stop = this.stop.bind(this)
     this.push = this.push.bind(this)
     this.run = this.run.bind(this)
+    this.getResultedData = this.getResultedData.bind(this)
+    this.getProcessedData = this.getProcessedData.bind(this)
+    this.getQueueData = this.getQueueData.bind(this)
+    this.resetAll = this.resetAll.bind(this)
   }
-  private fillQueue(iterationProps: Props) {
+  private fillQueue(iterationProps?: Props) {
     this.queue.set('queue', new Set(iterationProps))
-    this.queue.set('processed', new Set())
+    this.queue.set('processed', [])
   }
 
   private async *gen() {
@@ -99,11 +103,32 @@ export class CreateAsyncQueue<
       yield await this.useIteration(...preparedData)
 
       this.queueSet.delete(prop)
-      this.processedSet.add(prop)
+      this.processedSet.push(prop)
       this.emitStopping()
     }
   }
   async run<Fn extends (args: ReturnType<Iteration>) => any>(
+    callback?: Fn,
+    isCallbackShouldBeSkipped: boolean = false,
+  ) {
+    return this.runWithOption(this, callback, isCallbackShouldBeSkipped)
+  }
+  async runWithResult<Fn extends (args: ReturnType<Iteration>) => any>(
+    callback?: Fn,
+    isCallbackShouldBeSkipped: boolean = false,
+  ) {
+    return this.runWithOption(
+      this.resulted,
+      callback,
+      isCallbackShouldBeSkipped,
+    )
+  }
+
+  private async runWithOption<
+    Option,
+    Fn extends (args: ReturnType<Iteration>) => any,
+  >(
+    resultOption: Option,
     callback?: Fn,
     isCallbackShouldBeSkipped: boolean = false,
   ) {
@@ -113,6 +138,9 @@ export class CreateAsyncQueue<
     if (this.isRunning) {
       await this.awaitRunning()
     }
+    if (!this.queueSet.size) {
+      return resultOption
+    }
     const memoizedCb = callback || this.runCallback
     for await (let item of this.gen()) {
       if (memoizedCb && !isCallbackShouldBeSkipped) {
@@ -121,7 +149,7 @@ export class CreateAsyncQueue<
       }
     }
 
-    return this.resulted
+    return resultOption
   }
   private awaitRunning() {
     return new Promise(res => {

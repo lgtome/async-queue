@@ -10,12 +10,15 @@
     "Generator",
     "Generators",
     "queue",
-    "run queue"
+    "run queue",
+    "async queue",
+    "queued"
   ],
   "scripts": {
     "coverage": "c8",
-    "declarations": "tsc --project tsconfig.json",
-    "serve": "tsc && node ./lib/index.js"
+    "compile": "tsc --project tsconfig.json",
+    "serve": "tsc && node ./lib/index.js",
+    "tests": "vitest"
   },
   "author": "lgtome <seryikotenok232@gmail.com>",
   "license": "MIT",
@@ -31,8 +34,10 @@
     "./package.json": "./package.json"
   },
   "devDependencies": {
+    "@vitest/coverage-c8": "^0.30.1",
     "c8": "^7.13.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "vitest": "0.30.0"
   },
   "c8": {
     "exclude": [
