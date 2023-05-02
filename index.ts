@@ -16,12 +16,14 @@ export class CreateAsyncQueue<
   Iteration extends FunctionExtended = FunctionExtended,
   Props extends ParametersWithArg<Iteration> = ParametersWithArg<Iteration>,
 > {
-  queue!: Map<MapKeys, Set<Props>>
-  queueSet!: Set<Props>
-  processedSet!: Set<Props>
-  options!: Options
-  useIteration!: Iteration
-  iterationProps!: Props
+  private queue!: Map<MapKeys, Set<Props>>
+  private queueSet!: Set<Props>
+  private processedSet!: Set<Props>
+  private options!: Options
+  private useIteration!: Iteration
+  private resulted: Array<ReturnType<(args: ReturnType<Iteration>) => any>> = []
+  private runCallback?: (args: ReturnType<Iteration>) => any
+
 
   constructor(useIteration: Iteration, iterationProps: Props) {
     this.initialization(useIteration, iterationProps)
@@ -30,7 +32,6 @@ export class CreateAsyncQueue<
 
   private initialization(useIteration: Iteration, iterationProps: Props) {
     this.useIteration = useIteration
-    this.iterationProps = iterationProps
 
     this.setToDefault()
 
@@ -67,16 +68,22 @@ export class CreateAsyncQueue<
       this.processedSet.add(prop)
     }
   }
-  async run<Fn extends (args: ReturnType<Iteration>) => any>(callback?: Fn) {
-    const result = [] as Array<ReturnType<Fn>>
+  async run<Fn extends (args: ReturnType<Iteration>) => any>(
+    callback?: Fn,
+    isCallbackShouldBeSkipped: boolean = false,
+  ) {
+    if (callback) {
+      this.runCallback = callback
+    }
+    const memoizedCb = callback || this.runCallback
     for await (let item of this.gen()) {
-      if (callback) {
-        const res = await callback(item)
-        result.push(res)
+      if (memoizedCb && !isCallbackShouldBeSkipped) {
+        const res = await memoizedCb(item)
+        this.resulted.push(res)
       }
     }
 
-    return result
+    return this.resulted
   }
 
   private setToDefault() {
@@ -85,6 +92,7 @@ export class CreateAsyncQueue<
     }
 
     this.queue = new Map<MapKeys, Set<Props>>()
+    this.resulted = []
   }
 
   getProcessedData() {
@@ -93,6 +101,10 @@ export class CreateAsyncQueue<
 
   getQueueData() {
     return [...this.getQueue()]
+  }
+
+  getResultedData() {
+    return this.resulted
   }
 
   resetAll(iterationProps: Props) {
