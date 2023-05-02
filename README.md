@@ -6,7 +6,7 @@ Zero dependencies ✨
 
 ## Installation and Usage
 
-### ES6 via npm
+### ES2018 via npm
 
 ```shell
 npm install async-queued
