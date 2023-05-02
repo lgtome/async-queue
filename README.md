@@ -101,7 +101,7 @@ just pass the second argument as `false` to suppress invocation
 
 #### **Stop**
 
-Stop function that just stopping all future Promises, but not current.
+Stop function that stopping all future Promises, but not current.
 
 ```ts
 /**
@@ -112,7 +112,7 @@ queue.stop()
 
 #### **Resume**
 
-Resume function that just resume current queue.
+Resume function that resume current queue.
 
 ```ts
 /**
@@ -123,7 +123,7 @@ queue.resume()
 
 #### **Push**
 
-Push function that just push values to current queue.
+Push function that push values to current queue.
 
 ```ts
 /**
@@ -135,7 +135,7 @@ queue.push([1, 2, 3])
 
 #### **resetAll**
 
-resetAll function that just reset queue and set queue data.
+resetAll function that reset queue and set queue data.
 
 ```ts
 /**
@@ -147,7 +147,7 @@ queue.resetAll([1, 2, 3])
 
 #### **getResultedData**
 
-getResultedData function that just return resulted after queue data.
+getResultedData function that returns data after the passed iteration, which could be changed.
 
 ```ts
 /**
@@ -158,7 +158,7 @@ queue.getResultedData()
 
 #### **getQueueData**
 
-getQueueData function that just return data to current queue, that need to be processed.
+getQueueData function that returns data to current queue, that need to be processed.
 
 ```ts
 /**
@@ -169,7 +169,7 @@ queue.getQueueData()
 
 #### **getProcessedData**
 
-getProcessedData function that just return data that already processed, but not resulted.
+getProcessedData function that returns data that already processed, but not resulted.
 
 ```ts
 /**
