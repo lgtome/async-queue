@@ -130,7 +130,7 @@ Push function that just push values to current queue.
  * @entry Array of { values }
  * @returns CreateAsyncQueue instance
  */
-queue.push()
+queue.push([1, 2, 3])
 ```
 
 #### **resetAll**
