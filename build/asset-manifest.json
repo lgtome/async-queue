@@ -1,10 +1,6 @@
 {
-  "bundle.js": "bundle.a72cb.esm.js",
-  "bundle.js.map": "bundle.a72cb.esm.js.map",
-  "polyfills.js": "polyfills.7840f.esm.js",
-  "polyfills.js.map": "polyfills.7840f.esm.js.map",
-  "sw-esm.js": "sw-esm.js",
-  "sw-esm.js.map": "sw-esm.js.map",
-  "sw.js": "sw.js",
-  "sw.js.map": "sw.js.map"
+  "bundle.js": "bundle.8ff95.esm.js",
+  "bundle.js.map": "bundle.8ff95.esm.js.map",
+  "polyfills.js": "polyfills.3c397.esm.js",
+  "polyfills.js.map": "polyfills.3c397.esm.js.map"
 }
