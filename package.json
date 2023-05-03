@@ -20,7 +20,7 @@
     "serve": "tsc && node ./lib/index.js",
     "tests": "vitest",
     "build": "preact build",
-    "serve:preact": "preact build && serve build --single",
+    "serve:preact": "preact build --no-prerender && serve build --single",
     "dev": "preact watch",
     "lint": "eslint src",
     "test": "jest",
