@@ -3,8 +3,7 @@ name: gh pages upload
 on:
   push:
     branches:
-      - main
-      - gh-pages
+      - master
 
 jobs:
   build-deploy:
