@@ -5,3 +5,4 @@ index.ts
 wallaby.js
 vitest.config.ts
 .prettierrc
+specs/
