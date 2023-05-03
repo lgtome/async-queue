@@ -14,6 +14,7 @@
     "async queue",
     "queued"
   ],
+  "homepage": "https://lgtome.github.io/gh-pages/",
   "scripts": {
     "coverage": "c8",
     "compile": "tsc --project tsconfig.json",
@@ -25,7 +26,7 @@
     "lint": "eslint src",
     "test": "jest",
     "build:gh": "GITHUB_PAGES=async-queued preact build --no-prerender",
-    "deploy": "gh-pages -d build"
+    "deploy": "yarn run build:gh && gh-pages -d build"
   },
   "author": "lgtome <seryikotenok232@gmail.com>",
   "license": "MIT",
