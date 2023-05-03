@@ -24,7 +24,7 @@
     "dev": "preact watch",
     "lint": "eslint src",
     "test": "jest",
-    "build:gh": "GITHUB_PAGES=async-queued preact build"
+    "build:gh": "GITHUB_PAGES=async-queued preact build --no-prerender"
   },
   "author": "lgtome <seryikotenok232@gmail.com>",
   "license": "MIT",
