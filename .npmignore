@@ -1,7 +1,0 @@
-specs/
-coverage/
-tsconfig.json
-index.ts
-wallaby.js
-vitest.config.ts
-.prettierrc
