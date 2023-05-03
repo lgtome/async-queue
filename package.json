@@ -21,8 +21,9 @@
     "serve": "tsc && node ./lib/index.js",
     "tests": "vitest",
     "build": "preact build",
-    "serve:preact": "preact build --no-prerender && serve build --single",
+    "sp": "preact build --no-prerender && serve build",
     "dev": "preact watch",
+    "sr": "serve build",
     "lint": "eslint src",
     "test": "jest",
     "build:gh": "GITHUB_PAGES=async-queued preact build --no-prerender",
@@ -59,8 +60,6 @@
     "check-coverage": true
   },
   "dependencies": {
-    "dotenv": "^16.0.3",
-    "dotenv-webpack": "^8.0.1",
     "preact": "^10.13.2",
     "preact-router": "^4.1.0"
   }

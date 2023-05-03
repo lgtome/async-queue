@@ -1,18 +1,29 @@
 export default {
   webpack(config, env, helpers, options) {
-    config.plugins.push(
-      new helpers.webpack.DefinePlugin({
-        'process.env.GITHUB_PAGES': JSON.stringify('test'),
-      }),
-    )
-    const publicPath = process.env.GITHUB_PAGES
-      ? `/${process.env.GITHUB_PAGES}/`
-      : '/'
-    const ghEnv =
-      process.env.GITHUB_PAGES && JSON.stringify(`${process.env.GITHUB_PAGES}`)
-
-    config.output.publicPath = publicPath
-    // const { plugin } = helpers.getPluginsByName(config, 'DefinePlugin')[0]
-    // Object.assign(plugin.definitions, { ['process.env.GITHUB_PAGES']: ghEnv })
+    config.node.console = true
+    config.node.process = true
+    if (!env.isServer) {
+      config.entry['public-bundle'] = path.resolve(
+        __dirname,
+        'public-page.entry.js',
+      )
+      for (const {
+        plugin: { options },
+      } of helpers.getPluginsByName(config, 'HtmlWebpackPlugin')) {
+        if (options.url === '/account') {
+          options.chunks = ['bundle', 'polyfills']
+          options.template = `!!ejs-loader?esModule=false!${path.resolve(
+            __dirname,
+            './src/app-template.ejs',
+          )}`
+        } else {
+          options.chunks = ['public-bundle', 'polyfills']
+          options.template = `!!ejs-loader?esModule=false!${path.resolve(
+            __dirname,
+            './src/public-template.ejs',
+          )}`
+        }
+      }
+    }
   },
 }
